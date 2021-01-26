@@ -7,7 +7,7 @@ import constants
 from datasets.StartingDataset import StartingDataset
 from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
-
+import numpy as np
 
 SUMMARIES_PATH = "training_summaries"
 
@@ -30,8 +30,10 @@ def main():
     print("Batch size:", args.batch_size)
 
     # Initalize dataset and model. Then train the model!
-    train_dataset = StartingDataset()
-    val_dataset = StartingDataset()
+    path = './cassava-leaf-disease-classification/train.csv'
+    data = np.genfromtxt(path, delimiter=',', dtype='str')
+    train_dataset = StartingDataset(truth = data[1:, 1], statements = data[1:, 0])
+    val_dataset = StartingDataset(truth = data[1:, 1], statements = data[1:, 0]) # filler code, replace later
     model = StartingNetwork()
     starting_train(
         train_dataset=train_dataset,
