@@ -32,17 +32,18 @@ def main():
     # Initalize dataset and model. Then train the model!
     path = './cassava-leaf-disease-classification/train.csv'
     data = np.genfromtxt(path, delimiter=',', dtype='str')
-    train_dataset = StartingDataset(truth = data[1:, 1], statements = data[1:, 0])
-    val_dataset = StartingDataset(truth = data[1:, 1], statements = data[1:, 0]) # filler code, replace later
-    model = StartingNetwork()
-    starting_train(
-        train_dataset=train_dataset,
-        val_dataset=val_dataset,
-        model=model,
-        hyperparameters=hyperparameters,
-        n_eval=args.n_eval,
-        summary_path=summary_path,
-    )
+    train_dataset = StartingDataset(truth = data[1:, 1], images = data[1:, 0])
+    print(train_dataset[0])
+    # val_dataset = StartingDataset(truth = data[1:, 1], statements = data[1:, 0]) # filler code, replace later
+    # model = StartingNetwork()
+    # starting_train(
+    #     train_dataset=train_dataset,
+    #     val_dataset=val_dataset,
+    #     model=model,
+    #     hyperparameters=hyperparameters,
+    #     n_eval=args.n_eval,
+    #     summary_path=summary_path,
+    # )
 
 
 def parse_arguments():
