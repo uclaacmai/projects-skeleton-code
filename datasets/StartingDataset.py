@@ -22,12 +22,13 @@ class StartingDataset(torch.utils.data.Dataset):
         image_id = os.path.join(self.images_dir,
                                 self.csv_file.iloc[index, 0])
         image = io.imread(image_id)
-        image = torchvision.transforms.ToTensor()
+        image = torch.Tensor(image)
         labels = self.csv_file.iloc[index, 1:]
+        labels = torch.Tensor(labels)
 
         return image, labels
 
-    def showitem(self, index):
+    def __showitem__(self, index):
         img, label = self.getitem(index)
         plt.imshow(img[0].squeeze(), cmap = 'gray')
         print(label)
