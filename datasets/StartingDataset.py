@@ -1,19 +1,20 @@
 import torch
-
+import torchvision
+from PIL import Image
 
 class StartingDataset(torch.utils.data.Dataset):
-    """
-    Dataset that contains 100000 3x224x224 black images (all zeros).
-    """
-
-    def __init__(self):
-        pass
+    def __init__(self, images, truth):
+        self.images = images
+        self.truth = truth
 
     def __getitem__(self, index):
-        inputs = torch.zeros([3, 224, 224])
-        label = 0
+        path = self.images[index]
+        label = self.truth[index]
 
-        return inputs, label
+        img = Image.open(f'./cassava-leaf-disease-classification/train_images/{path}')
+        tensor = torchvision.transforms.ToTensor()(img).unsqueeze_(0)*255
+
+        return tensor, label
 
     def __len__(self):
-        return 10000
+        return len(self.statements)

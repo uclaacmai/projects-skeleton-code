@@ -7,7 +7,7 @@ import constants
 from datasets.StartingDataset import StartingDataset
 from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
-
+import numpy as np
 
 SUMMARIES_PATH = "training_summaries"
 
@@ -30,6 +30,7 @@ def main():
     print("Batch size:", args.batch_size)
 
     # Initalize dataset and model. Then train the model!
+<<<<<<< HEAD
     train_dataset = StartingDataset()
     val_dataset = StartingDataset()
     model = StartingNetwork(3, 4)
@@ -41,6 +42,22 @@ def main():
         n_eval=args.n_eval,
         summary_path=summary_path,
     )
+=======
+    path = './cassava-leaf-disease-classification/train.csv'
+    data = np.genfromtxt(path, delimiter=',', dtype='str')
+    train_dataset = StartingDataset(truth = data[1:, 1], images = data[1:, 0])
+    print(train_dataset[0])
+    # val_dataset = StartingDataset(truth = data[1:, 1], statements = data[1:, 0]) # filler code, replace later
+    # model = StartingNetwork()
+    # starting_train(
+    #     train_dataset=train_dataset,
+    #     val_dataset=val_dataset,
+    #     model=model,
+    #     hyperparameters=hyperparameters,
+    #     n_eval=args.n_eval,
+    #     summary_path=summary_path,
+    # )
+>>>>>>> a3371f144c9371de73519bd81a8ad22e90f6671f
 
 
 def parse_arguments():

@@ -2,3 +2,5 @@ __pycache__
 .vscode
 
 training_summaries
+data
+cassava-leaf-disease-classification*
