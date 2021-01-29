@@ -38,6 +38,7 @@ def starting_train(
     writer = torch.utils.tensorboard.SummaryWriter(summary_path)
 
     step = 0
+    model.train()
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1} of {epochs}")
 
@@ -45,28 +46,36 @@ def starting_train(
         for i, batch in enumerate(train_loader):
             print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
 
+            # TODO: Backpropagation and gradient descent
+            # * Backprop should be done
             model.train()
 
+            # print(batch)
             batch_inputs, batch_labels = batch
+            # batch_labels = [x for x in batch_labels]
+            # batch_inputs = torch.tensor([batch_inputs])
+            # batch_labels = torch.tensor([batch_labels])
+            print("batch_labels is:",batch_labels)
             optimizer.zero_grad()
             predictions = model.forward(batch_inputs)
             current_loss = loss_fn(predictions, batch_labels)
             current_loss.backward()
             optimizer.step()
-            # TODO: Backpropagation and gradient descent
 
             # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
                 # TODO:
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard.
-
+                writer.add_scalar("train_loss", current_loss, global_step = step)
+                writer.add_scalar("train_accuracy", compute_accuracy(predictions, batch_labels), global_step = step)
                 # TODO:
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                evaluate(val_loader, model, loss_fn)
-
+                eval_accuracy, eval_loss = evaluate(val_loader, model, loss_fn)
+                writer.add_scalar("eval_accuracy",eval_accuracy,global_step=step)
+                writer.add_scalar("eval_loss",eval_loss, global_step=step)
             step += 1
 
         print()
@@ -95,4 +104,15 @@ def evaluate(val_loader, model, loss_fn):
 
     TODO!
     """
-    pass
+    model.eval()
+    correct = 0
+    total = 0
+    for batch_inputs, batch_labels in iter(val_loader):
+        # batch_inputs, batch_labels = batch_inputs.to(device), batch_labels.to(device)
+        predictions = model(batch_inputs).argmax(axis=1) #16x10, axis 0 is 16, axis 1 is 10
+        # predictions = model.forward(batch_inputs).argmax(axis=1)
+        loss = loss_fn(predictions, batch_labels)
+        total += len(batch_labels)
+        correct += (predictions==batch_labels).sum().item()
+    print(100*correct/total,"%")
+    return (100*correct/total), loss

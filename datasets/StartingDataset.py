@@ -12,9 +12,8 @@ class StartingDataset(torch.utils.data.Dataset):
         label = self.truth[index]
 
         img = Image.open(f'./cassava-leaf-disease-classification/train_images/{path}')
-        tensor = torchvision.transforms.ToTensor()(img).unsqueeze_(0)*255
-
-        return tensor, label
+        tensor = torchvision.transforms.ToTensor()(img).unsqueeze_(0)
+        return tensor, int(label)
 
     def __len__(self):
-        return len(self.statements)
+        return len(self.truth)
