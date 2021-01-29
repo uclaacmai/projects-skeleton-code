@@ -55,13 +55,14 @@ def starting_train(
             # batch_labels = [x for x in batch_labels]
             # batch_inputs = torch.tensor([batch_inputs])
             # batch_labels = torch.tensor([batch_labels])
-            print("batch_labels is:",batch_labels)
+            # print("batch_labels is:",batch_labels)
             optimizer.zero_grad()
             predictions = model.forward(batch_inputs)
             current_loss = loss_fn(predictions, batch_labels)
             current_loss.backward()
             optimizer.step()
 
+            step +=1
             # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
                 # TODO:
@@ -76,7 +77,7 @@ def starting_train(
                 eval_accuracy, eval_loss = evaluate(val_loader, model, loss_fn)
                 writer.add_scalar("eval_accuracy",eval_accuracy,global_step=step)
                 writer.add_scalar("eval_loss",eval_loss, global_step=step)
-            step += 1
+            # step += 1
 
         print()
 
@@ -91,9 +92,8 @@ def compute_accuracy(outputs, labels):
 
     Example output:
         0.75
-    """
-
-    n_correct = (torch.round(outputs) == labels).sum().item()
+    """  
+    n_correct = (torch.argmax(outputs) == labels).sum().item()
     n_total = len(outputs)
     return n_correct / n_total
 
@@ -107,12 +107,15 @@ def evaluate(val_loader, model, loss_fn):
     model.eval()
     correct = 0
     total = 0
-    for batch_inputs, batch_labels in iter(val_loader):
+    for i, batch in enumerate(val_loader):
         # batch_inputs, batch_labels = batch_inputs.to(device), batch_labels.to(device)
-        predictions = model(batch_inputs).argmax(axis=1) #16x10, axis 0 is 16, axis 1 is 10
+        batch_inputs, batch_labels = batch
+        batch_inputs = torch.squeeze(batch_inputs)
+        print("Batch inputs is ",batch_inputs.size())
+        predictions = model.forward(batch_inputs) #16x10, axis 0 is batch size, axis 1 is output dim from the model
         # predictions = model.forward(batch_inputs).argmax(axis=1)
         loss = loss_fn(predictions, batch_labels)
         total += len(batch_labels)
-        correct += (predictions==batch_labels).sum().item()
+        correct += (torch.argmax(predictions) == batch_labels).sum().item()
     print(100*correct/total,"%")
     return (100*correct/total), loss

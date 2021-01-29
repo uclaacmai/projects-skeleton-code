@@ -16,20 +16,21 @@ class StartingNetwork(torch.nn.Module):
         # self.conv5 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
         self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2)
         # self.fc1 = nn.Linear(25088,128)
-        flatten_size = 64 * 400 * 300
+        flatten_size = 64 * 112 * 112
+        #64 * 400 * 300
         # 512*25*10
         self.fc1 = nn.Linear(flatten_size,128)
         self.fc2 = nn.Linear(128,output_dim)
         
     def forward(self, x):
         x = torch.squeeze(x)
-        print('Beginning shape: ', x.shape)
+        # print('Beginning shape: ', x.shape)
         x = self.conv1(x)
-        print("finished conv1")
+        # print("finished conv1")
         x = F.relu(x)
-        print("finished relu")
+        # print("finished relu")
         x = self.maxpool1(x)
-        print("finished maxpool")
+        # print("finished maxpool")
         # x = self.conv2(x)
         # x = F.relu(x)
         # x = self.maxpool1(x)
@@ -42,7 +43,7 @@ class StartingNetwork(torch.nn.Module):
         # x = self.conv5(x)
         # x = F.relu(x)
         # x = self.maxpool1(x)
-        print('Shape after CNN: ', x.shape)
+        # print('Shape after CNN: ', x.shape)
         x = torch.reshape(x,[32, -1])
         x = self.fc1(x)
         x = F.relu(x)
