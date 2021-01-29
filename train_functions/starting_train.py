@@ -48,7 +48,7 @@ def starting_train(
 
             # TODO: Backpropagation and gradient descent
             # * Backprop should be done
-            model.train()
+            # model.train()
 
             # print(batch)
             batch_inputs, batch_labels = batch
