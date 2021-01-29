@@ -29,6 +29,10 @@ class StartingDataset(torch.utils.data.Dataset):
         return image, labels
 
     def __showitem__(self, index):
-        img, label = self.getitem(index)
-        plt.imshow(img[0].squeeze(), cmap = 'gray')
-        print(label)
+        img, label = self.__getitem__(index)
+        #plt.imshow(torchvision.transforms.ToPILImage()(img), interpolation="bicubic")
+        image = img.int()
+        plt.imshow(image)
+        plt.show()
+        #torchvision.transforms.ToPILImage()(img.permute(2, 0, 1)).show()
+        #print(label)
