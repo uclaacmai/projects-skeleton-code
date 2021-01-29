@@ -13,7 +13,9 @@ SUMMARIES_PATH = "training_summaries"
 
 
 def main():
-    # Get command line arguments
+    images_dir = "./cassava-leaf-disease-classification/train_images"
+
+    # Get command line arguments    
     args = parse_arguments()
     hyperparameters = {"epochs": args.epochs, "batch_size": args.batch_size}
 
@@ -30,8 +32,8 @@ def main():
     print("Batch size:", args.batch_size)
 
     # Initalize dataset and model. Then train the model!
-    train_dataset = StartingDataset()
-    val_dataset = StartingDataset()
+    train_dataset = StartingDataset(images_dir)
+    val_dataset = StartingDataset(images_dir)
     model = StartingNetwork()
     starting_train(
         train_dataset=train_dataset,

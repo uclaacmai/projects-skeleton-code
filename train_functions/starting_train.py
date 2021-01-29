@@ -41,27 +41,54 @@ def starting_train(
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1} of {epochs}")
 
+#convolutional
+# for epoch in range(EPOCH):
+#     for i, data in enumerate(train_dataloader):
+#         input_data, labels = data
+
+#         optimizer.zero_grad()
+        
+#         predictions = conv_network.forward(input_data)
+#         loss = loss_fn(predictions, labels)
+        
+#         step += 1
+#         train_summary.add_scalar("train_loss", loss, global_step = step)
+        
+#         loss.backward()
+#         optimizer.step()
+    
+#     print("Epoch ", epoch, "  Loss ", loss.item())
+
         # Loop over each batch in the dataset
         for i, batch in enumerate(train_loader):
             print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
 
             # TODO: Backpropagation and gradient descent
+            img, labels = batch
+            
+            optimizer.zero_grad()
 
-            # Periodically evaluate our model + log to Tensorboard
-            if step % n_eval == 0:
-                # TODO:
-                # Compute training loss and accuracy.
-                # Log the results to Tensorboard.
+            predictions = model.forward(img)
+            loss = loss_fn(predictions, labels)
 
-                # TODO:
-                # Compute validation loss and accuracy.
-                # Log the results to Tensorboard.
-                # Don't forget to turn off gradient calculations!
-                evaluate(val_loader, model, loss_fn)
+            # # Periodically evaluate our model + log to Tensorboard
+            # if step % n_eval == 0:
+            #     # TODO:
+            #     # Compute training loss and accuracy.
+            #     # Log the results to Tensorboard.
+
+            #     # TODO:
+            #     # Compute validation loss and accuracy.
+            #     # Log the results to Tensorboard.
+            #     # Don't forget to turn off gradient calculations!
+            #     evaluate(val_loader, model, loss_fn)
 
             step += 1
-
-        print()
+            
+            loss.backward()
+            optimizer.step()
+            
+        print("Epoch ", epoch, "Loss ", loss.item())
 
 
 def compute_accuracy(outputs, labels):
