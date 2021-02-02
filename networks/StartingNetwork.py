@@ -12,10 +12,11 @@ class StartingNetwork(torch.nn.Module):
         self.conv1 = nn.Conv2d(input_dim, 64, kernel_size=3, stride=1, padding=1)
         self.conv2 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
         self.conv3 = nn.Conv2d(128, 256, kernel_size=3, stride=1, padding=1)
-        self.conv4 = nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1)
-        self.conv5 = nn.Conv2d(512, 512, kernel_size=3, stride=1, padding=1)
+        # self.conv4 = nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1)
+        self.conv4 = nn.Conv2d(256, 10, kernel_size=3, stride=1, padding=1)
         self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.flatten_size = 512*25*18
+        self.flatten_size = 10*50*37
+        # 512*25*18
         # 64 * 112 * 112
         # 64 * 400 * 300
         # 512*25*18
@@ -38,9 +39,9 @@ class StartingNetwork(torch.nn.Module):
         x = F.relu(x)
         x = self.maxpool1(x)
         x = self.conv4(x)
-        x = F.relu(x)
-        x = self.maxpool1(x)
-        x = self.conv5(x)
+        # x = F.relu(x)
+        # x = self.maxpool1(x)
+        # x = self.conv5(x)
         x = F.relu(x)
         x = self.maxpool1(x)
         # print('Shape after CNN: ', x.shape)
