@@ -78,7 +78,8 @@ def starting_train(
                 # Compute training loss and accuracy.
                 print(labels.shape)
                 print(predictions.shape)
-                print('Accuracy: '+compute_accuracy(predictions, labels))
+                accuracy = compute_accuracy(predictions.argmax(axis=1), labels)
+                print(f"Accuracy: {accuracy}")
 
                 # Log the results to Tensorboard.
                 
@@ -109,9 +110,12 @@ def compute_accuracy(outputs, labels):
         0.75
     """
 
-    n_correct = (torch.round(outputs) == labels).sum().item()
+    print(outputs.shape)
+    print(labels.shape)
+
+    n_correct = (outputs == labels).sum().item()
     n_total = len(outputs)
-    return n_correct / n_totals
+    return n_correct / n_total
 
 
 def evaluate(val_loader, model, loss_fn):
