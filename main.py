@@ -35,8 +35,8 @@ def main():
     train_prop = 0.70
     path = './cassava-leaf-disease-classification/train.csv'
     data = np.genfromtxt(path, delimiter=',', dtype='str')
-    train_dataset = StartingDataset(truth = data[1:int(count*train_prop), 1], images = data[1:int(count*train_prop), 0])
-    val_dataset = StartingDataset(truth = data[int(count*train_prop):count, 1], images = data[int(count*train_prop):count, 0])
+    train_dataset = StartingDataset(truth = data[1:int(count*train_prop), 1], images = data[1:int(count*train_prop), 0], base = './cassava-leaf-disease-classification/train_images')
+    val_dataset = StartingDataset(truth = data[int(count*train_prop):count, 1], images = data[int(count*train_prop):count, 0], base = './cassava-leaf-disease-classification/train_images')
     model = StartingNetwork(3, 5)
     starting_train(
         train_dataset=train_dataset,
