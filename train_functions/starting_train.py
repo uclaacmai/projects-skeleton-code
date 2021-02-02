@@ -58,6 +58,8 @@ def starting_train(
             # print("batch_labels is:",batch_labels)
             optimizer.zero_grad()
             predictions = model.forward(batch_inputs)
+            print("Predictions size:",predictions.size())
+            print("Batch Labels size:",batch_labels.size())
             current_loss = loss_fn(predictions, batch_labels)
             current_loss.backward()
             optimizer.step()
