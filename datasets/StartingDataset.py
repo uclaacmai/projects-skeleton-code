@@ -23,9 +23,8 @@ class StartingDataset(torch.utils.data.Dataset):
                                 self.csv_file.iloc[index, 0])
         image = io.imread(image_id)
         image = torch.Tensor(image)
-        labels = self.csv_file.iloc[index, 1:]
-        labels = torch.Tensor(labels)
-
+        image = image.permute(2, 1, 0)
+        labels = self.csv_file.iloc[index, 1]   
         return image, labels
 
     def __showitem__(self, index):

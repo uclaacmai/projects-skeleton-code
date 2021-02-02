@@ -67,21 +67,27 @@ def starting_train(
             img, labels = batch
             
             optimizer.zero_grad()
-
+            
             predictions = model.forward(img)
+            
             loss = loss_fn(predictions, labels)
 
-            # # Periodically evaluate our model + log to Tensorboard
-            # if step % n_eval == 0:
-            #     # TODO:
-            #     # Compute training loss and accuracy.
-            #     # Log the results to Tensorboard.
+            # Periodically evaluate our model + log to Tensorboard
+            if step % n_eval == 0:
+                # TODO:
+                # Compute training loss and accuracy.
+                print(labels.shape)
+                print(predictions.shape)
+                print('Accuracy: '+compute_accuracy(predictions, labels))
 
-            #     # TODO:
-            #     # Compute validation loss and accuracy.
-            #     # Log the results to Tensorboard.
-            #     # Don't forget to turn off gradient calculations!
-            #     evaluate(val_loader, model, loss_fn)
+                # Log the results to Tensorboard.
+                
+
+                # TODO:
+                # Compute validation loss and accuracy.
+                # Log the results to Tensorboard.
+                # Don't forget to turn off gradient calculations!
+                evaluate(val_loader, model, loss_fn)
 
             step += 1
             
@@ -105,7 +111,7 @@ def compute_accuracy(outputs, labels):
 
     n_correct = (torch.round(outputs) == labels).sum().item()
     n_total = len(outputs)
-    return n_correct / n_total
+    return n_correct / n_totals
 
 
 def evaluate(val_loader, model, loss_fn):

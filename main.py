@@ -34,16 +34,17 @@ def main():
     # Initalize dataset and model. Then train the model!
     train_dataset = StartingDataset(images_dir)
     val_dataset = StartingDataset(images_dir)
-    model = ConvNet(600*800*3, 10)
-    train_dataset.__showitem__(0)
-    # starting_train(
-    #     train_dataset=train_dataset,
-    #     val_dataset=val_dataset,
-    #     model=model,
-    #     hyperparameters=hyperparameters,
-    #     n_eval=args.n_eval,
-    #     summary_path=summary_path,
-    # )
+    model = ConvNet(3, 5)
+    #train_dataset.__showitem__(0)
+
+    starting_train(
+        train_dataset=train_dataset,
+        val_dataset=val_dataset,
+        model=model,
+        hyperparameters=hyperparameters,
+        n_eval=args.n_eval,
+        summary_path=summary_path,
+    )
 
 
 def parse_arguments():
