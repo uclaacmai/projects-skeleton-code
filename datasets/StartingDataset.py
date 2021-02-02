@@ -3,15 +3,16 @@ import torchvision
 from PIL import Image
 
 class StartingDataset(torch.utils.data.Dataset):
-    def __init__(self, images, truth):
+    def __init__(self, images, truth, base):
         self.images = images
         self.truth = truth
+        self.base = base
 
     def __getitem__(self, index):
         path = self.images[index]
         label = self.truth[index]
 
-        img = Image.open(f'./cassava-leaf-disease-classification/train_images/{path}')
+        img = Image.open(f'{self.base}/{path}')
         tensor = torchvision.transforms.ToTensor()(img).unsqueeze_(0)
         tensor = torchvision.transforms.Resize((224,224))(tensor)
         return tensor, int(label)
