@@ -15,7 +15,7 @@ class StartingNetwork(torch.nn.Module):
         # self.conv4 = nn.Conv2d(256, 512, kernel_size=3, stride=1, padding=1)
         self.conv4 = nn.Conv2d(256, 10, kernel_size=3, stride=1)
         self.maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.flatten_size = 10 * 48 * 35
+        self.flatten_size = 10 * 35 *48
         # 33600
         # 10*50*37
         # 512*25*18
@@ -26,7 +26,7 @@ class StartingNetwork(torch.nn.Module):
         self.fc2 = nn.Linear(128,output_dim)
         
     def forward(self, x):
-        x = torch.squeeze(x)
+        # x = torch.reshape(x,[-1,3,600,800])
         # print('Beginning shape: ', x.shape)
         x = self.conv1(x)
         # print("finished conv1",x.shape)

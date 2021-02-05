@@ -14,6 +14,7 @@ class StartingDataset(torch.utils.data.Dataset):
 
         img = Image.open(f'{self.base}/{path}')
         tensor = torchvision.transforms.ToTensor()(img).unsqueeze_(0)
+        tensor = torch.squeeze(tensor)
         return tensor, int(label)
 
     def __len__(self):
