@@ -31,14 +31,14 @@ def main():
     print("Batch size:", args.batch_size)
 
     # Initalize dataset and model. Then train the model!
-    count = 21397
-    # count = 64
+    # count = 21397
+    count = 64
     train_prop = 0.70
     path = './cassava-leaf-disease-classification/train.csv'
     data = np.genfromtxt(path, delimiter=',', dtype='str')
     train_dataset = StartingDataset(truth = data[1:int(count*train_prop), 1], images = data[1:int(count*train_prop), 0], base = './cassava-leaf-disease-classification/train_images')
     val_dataset = StartingDataset(truth = data[int(count*train_prop):count, 1], images = data[int(count*train_prop):count, 0], base = './cassava-leaf-disease-classification/train_images')
-
+    print(train_dataset[0])
     model = StartingNetwork(3, 5)
     model = model.to(device)
     starting_train(

@@ -1,6 +1,7 @@
 import torch
-import torchvision
+from torchvision import transforms
 from PIL import Image
+
 
 class StartingDataset(torch.utils.data.Dataset):
     def __init__(self, images, truth, base):
@@ -13,8 +14,11 @@ class StartingDataset(torch.utils.data.Dataset):
         label = self.truth[index]
 
         img = Image.open(f'{self.base}/{path}')
-        tensor = torchvision.transforms.ToTensor()(img).unsqueeze_(0)
-        tensor = torch.squeeze(tensor)
+        preprocess = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+        tensor = preprocess(img)
         return tensor, int(label)
 
     def __len__(self):
