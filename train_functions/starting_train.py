@@ -35,6 +35,7 @@ def starting_train(
     loss_fn = nn.CrossEntropyLoss()
 
     model.to(device)
+    loss_fn.to(device)
 
     # Initialize summary writer (for logging)
     writer = torch.utils.tensorboard.SummaryWriter(summary_path)
@@ -74,7 +75,7 @@ def starting_train(
             optimizer.zero_grad()
             
             predictions = model.forward(img)
-            
+
             loss = loss_fn(predictions, labels)
 
             # Periodically evaluate our model + log to Tensorboard
@@ -95,7 +96,7 @@ def starting_train(
                 # Don't forget to turn off gradient calculations!
                 model.eval()
                 with torch.no_grad():
-                    evaluate(val_loader, model, loss_fn)
+                    evaluate(val_loader, model, loss_fn, device)
                 writer.add_scalar("validation_loss", loss.item(), global_step = step)
    
             model.train()
@@ -127,14 +128,15 @@ def compute_accuracy(outputs, labels):
     return n_correct / n_total
 
 
-def evaluate(val_loader, model, loss_fn):
+def evaluate(val_loader, model, loss_fn, device):
     """
-    Computes the loss and accuracy of a model on the validation dataset.
+    Computes the loss and accuracy sof a model on the validation dataset.
     """
     model.eval() #eval mode so network doesn't learn from test dataset
-
+    
     for i, data in enumerate(val_loader):
         input_data, labels = data
+        input_data, labels = input_data.to(device), labels.to(device)
         predictions = model.forward(input_data)
         accuracy = compute_accuracy(predictions.argmax(axis=1), labels)
         

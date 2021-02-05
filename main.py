@@ -26,6 +26,8 @@ def main():
 
     # TODO: Add GPU support. This line of code might be helpful.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    print(torch.cuda.get_device_name(0))
 
     print("Summary path:", summary_path)
     print("Epochs:", args.epochs)
