@@ -5,7 +5,7 @@ import torch.utils.tensorboard
 
 
 def starting_train(
-    train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path
+    train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path, device
 ):
     """
     Trains and evaluates a model.
@@ -33,6 +33,8 @@ def starting_train(
     # Initalize optimizer (for gradient descent) and loss function
     optimizer = optim.Adam(model.parameters())
     loss_fn = nn.CrossEntropyLoss()
+
+    model.to(device)
 
     # Initialize summary writer (for logging)
     writer = torch.utils.tensorboard.SummaryWriter(summary_path)
@@ -64,8 +66,11 @@ def starting_train(
             print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
 
             # TODO: Backpropagation and gradient descent
+
             img, labels = batch
             
+            img, labels = img.to(device), labels.to(device)
+
             optimizer.zero_grad()
             
             predictions = model.forward(img)
@@ -76,20 +81,24 @@ def starting_train(
             if step % n_eval == 0:
                 # TODO:
                 # Compute training loss and accuracy.
-                print(labels.shape)
-                print(predictions.shape)
+                #print(labels.shape)
+                #print(predictions.shape)
                 accuracy = compute_accuracy(predictions.argmax(axis=1), labels)
                 print(f"Accuracy: {accuracy}")
 
                 # Log the results to Tensorboard.
+                writer.add_scalar("train_loss", loss.item(), global_step = step)
                 
-
                 # TODO:
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                evaluate(val_loader, model, loss_fn)
-
+                model.eval()
+                with torch.no_grad():
+                    evaluate(val_loader, model, loss_fn)
+                writer.add_scalar("validation_loss", loss.item(), global_step = step)
+   
+            model.train()
             step += 1
             
             loss.backward()
@@ -110,8 +119,8 @@ def compute_accuracy(outputs, labels):
         0.75
     """
 
-    print(outputs.shape)
-    print(labels.shape)
+    #print(outputs.shape)
+    #print(labels.shape)
 
     n_correct = (outputs == labels).sum().item()
     n_total = len(outputs)
@@ -121,7 +130,12 @@ def compute_accuracy(outputs, labels):
 def evaluate(val_loader, model, loss_fn):
     """
     Computes the loss and accuracy of a model on the validation dataset.
-
-    TODO!
     """
-    pass
+    model.eval() #eval mode so network doesn't learn from test dataset
+
+    for i, data in enumerate(val_loader):
+        input_data, labels = data
+        predictions = model.forward(input_data)
+        accuracy = compute_accuracy(predictions.argmax(axis=1), labels)
+        
+    print("Validation Accuracy: ", accuracy)

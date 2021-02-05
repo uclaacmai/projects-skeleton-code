@@ -1,7 +1,7 @@
 import argparse
 import os
 import time
-
+import torch
 
 import constants
 from datasets.StartingDataset import StartingDataset
@@ -25,15 +25,16 @@ def main():
     os.makedirs(summary_path, exist_ok=True)
 
     # TODO: Add GPU support. This line of code might be helpful.
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     print("Summary path:", summary_path)
     print("Epochs:", args.epochs)
     print("Batch size:", args.batch_size)
 
     # Initalize dataset and model. Then train the model!
-    train_dataset = StartingDataset(images_dir)
-    val_dataset = StartingDataset(images_dir)
+
+    train_dataset = StartingDataset(images_dir, 'train.csv')
+    val_dataset = StartingDataset(images_dir, 'val.csv')
     model = ConvNet(3, 5)
     #train_dataset.__showitem__(0)
 
@@ -44,6 +45,7 @@ def main():
         hyperparameters=hyperparameters,
         n_eval=args.n_eval,
         summary_path=summary_path,
+        device=device
     )
 
 

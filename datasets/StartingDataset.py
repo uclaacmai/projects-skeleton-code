@@ -10,8 +10,8 @@ class StartingDataset(torch.utils.data.Dataset):
     Dataset that contains 100000 3x224x224 black images (all zeros).
     """
 
-    def __init__(self, images_dir):
-        self.csv_file = pd.read_csv('train.csv')
+    def __init__(self, images_dir, csv_file):
+        self.csv_file = pd.read_csv(csv_file)
         self.images_dir = images_dir
 
     def __len__(self):
