@@ -5,7 +5,7 @@ import torch.utils.tensorboard
 
 
 def starting_train(
-    train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path
+    train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path, device
 ):
     """
     Trains and evaluates a model.
@@ -17,6 +17,7 @@ def starting_train(
         hyperparameters: Dictionary containing hyperparameters.
         n_eval:          Interval at which we evaluate our model.
         summary_path:    Path where Tensorboard summaries are located.
+        device:          cuda or cpu
     """
 
     # Get keyword arguments
@@ -52,14 +53,16 @@ def starting_train(
 
             # print(batch)
             batch_inputs, batch_labels = batch
+            batch_inputs = batch_inputs.to(device)
+            batch_labels = batch_labels.to(device)
             # batch_labels = [x for x in batch_labels]
             # batch_inputs = torch.tensor([batch_inputs])
             # batch_labels = torch.tensor([batch_labels])
             # print("batch_labels is:",batch_labels)
             optimizer.zero_grad()
             predictions = model.forward(batch_inputs)
-            print("Predictions size:",predictions.size())
-            print("Batch Labels size:",batch_labels.size())
+            # print("\tPredictions size:",predictions.size())
+            # print("\tBatch Labels size:",batch_labels.size())
             current_loss = loss_fn(predictions, batch_labels)
             current_loss.backward()
             optimizer.step()
@@ -76,7 +79,7 @@ def starting_train(
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                eval_accuracy, eval_loss = evaluate(val_loader, model, loss_fn)
+                eval_accuracy, eval_loss = evaluate(val_loader, model, loss_fn,device)
                 writer.add_scalar("eval_accuracy",eval_accuracy,global_step=step)
                 writer.add_scalar("eval_loss",eval_loss, global_step=step)
             # step += 1
@@ -100,7 +103,7 @@ def compute_accuracy(outputs, labels):
     return n_correct / n_total
 
 
-def evaluate(val_loader, model, loss_fn):
+def evaluate(val_loader, model, loss_fn,device):
     """
     Computes the loss and accuracy of a model on the validation dataset.
 
@@ -112,12 +115,15 @@ def evaluate(val_loader, model, loss_fn):
     for i, batch in enumerate(val_loader):
         # batch_inputs, batch_labels = batch_inputs.to(device), batch_labels.to(device)
         batch_inputs, batch_labels = batch
+        batch_inputs = batch_inputs.to(device)
+        batch_labels = batch_labels.to(device)
         batch_inputs = torch.squeeze(batch_inputs)
-        print("Batch inputs is ",batch_inputs.size())
+        # print("Batch inputs is ",batch_inputs.size())
         predictions = model.forward(batch_inputs) #16x10, axis 0 is batch size, axis 1 is output dim from the model
         # predictions = model.forward(batch_inputs).argmax(axis=1)
         loss = loss_fn(predictions, batch_labels)
         total += len(batch_labels)
         correct += (torch.argmax(predictions) == batch_labels).sum().item()
     print(100*correct/total,"%")
+    # torch.save(model.state_dict(),f"../models/cnn{100*correct/total}.pt")
     return (100*correct/total), loss
