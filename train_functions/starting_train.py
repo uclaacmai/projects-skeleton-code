@@ -125,5 +125,5 @@ def evaluate(val_loader, model, loss_fn,device):
         total += len(batch_labels)
         correct += (torch.argmax(predictions) == batch_labels).sum().item()
     print(100*correct/total,"%")
-    # torch.save(model.state_dict(),f"../models/cnn{100*correct/total}.pt")
+    torch.save(model.state_dict(),f"./models/cnn{100*correct/total}.pt")
     return (100*correct/total), loss
