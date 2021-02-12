@@ -149,3 +149,4 @@ def evaluate(val_loader, model, loss_fn, device):
         loss = loss_fn(predictions, labels)
         
     print(f"Validation Accuracy: {n_correct/n_total} Loss: {loss}")
+
