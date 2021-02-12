@@ -25,6 +25,7 @@ class StartingDataset(torch.utils.data.Dataset):
         image = torch.Tensor(image)
         image = image.permute(2, 1, 0)
         labels = self.csv_file.iloc[index, 1]   
+        #image.to(device)
         return image, labels
 
     def __showitem__(self, index):

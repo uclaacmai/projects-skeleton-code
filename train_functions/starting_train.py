@@ -84,6 +84,8 @@ def starting_train(
                 # Compute training loss and accuracy.
                 #print(labels.shape)
                 #print(predictions.shape)
+                #n_correct += (predictions.argmax(axis=1) == labels).sum().item()
+                #n_total += len(predictions.argmax(axis=1))
                 accuracy = compute_accuracy(predictions.argmax(axis=1), labels)
                 print(f"Accuracy: {accuracy}")
 
@@ -134,10 +136,16 @@ def evaluate(val_loader, model, loss_fn, device):
     """
     model.eval() #eval mode so network doesn't learn from test dataset
     
+    n_correct = 0
+    n_total = 0
+
     for i, data in enumerate(val_loader):
         input_data, labels = data
         input_data, labels = input_data.to(device), labels.to(device)
         predictions = model.forward(input_data)
-        accuracy = compute_accuracy(predictions.argmax(axis=1), labels)
+        n_correct += (predictions.argmax(axis=1) == labels).sum().item()
+        n_total += len(predictions.argmax(axis=1))        
+        #accuracy = compute_accuracy(predictions.argmax(axis=1), labels)
+        loss = loss_fn(predictions, labels)
         
-    print("Validation Accuracy: ", accuracy)
+    print(f"Validation Accuracy: {n_correct/n_total} Loss: {loss}")
