@@ -18,9 +18,9 @@ class StartingNetwork(torch.nn.Module):
         #x = self.flatten(x)
         #print(x.shape)
         x = F.relu(self.fc1(x))        
-        x = F.relu(self.fc2(x))
+        x = (self.fc2(x))
         #print(x.shape)
-        x = self.sigmoid(x)
+        #x = self.sigmoid(x)
         #print(x.shape)
         return x
 
