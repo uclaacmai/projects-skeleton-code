@@ -35,7 +35,8 @@ def starting_train(
     loss_fn = nn.CrossEntropyLoss()
 
     # Initialize summary writer (for logging)
-    writer = torch.utils.tensorboard.SummaryWriter(summary_path)
+    if summary_path is not None:
+        writer = torch.utils.tensorboard.SummaryWriter(summary_path)
 
     step = 0
     for epoch in range(epochs):

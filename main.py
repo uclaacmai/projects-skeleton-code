@@ -1,6 +1,5 @@
 import argparse
 import os
-import time
 
 
 import constants
@@ -18,9 +17,10 @@ def main():
     hyperparameters = {"epochs": args.epochs, "batch_size": args.batch_size}
 
     # Create path for training summaries
-    label = f"cassava__{int(time.time())}"
-    summary_path = f"{SUMMARIES_PATH}/{label}"
-    os.makedirs(summary_path, exist_ok=True)
+    summary_path = None
+    if args.logdir is not None:
+        summary_path = f"{SUMMARIES_PATH}/{args.logdir}"
+        os.makedirs(summary_path, exist_ok=True)
 
     # TODO: Add GPU support. This line of code might be helpful.
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -47,9 +47,8 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("--epochs", type=int, default=constants.EPOCHS)
     parser.add_argument("--batch_size", type=int, default=constants.BATCH_SIZE)
-    parser.add_argument(
-        "--n_eval", type=int, default=constants.N_EVAL,
-    )
+    parser.add_argument("--n_eval", type=int, default=constants.N_EVAL)
+    parser.add_argument("--logdir", type=str, default=None)
     return parser.parse_args()
 
 
