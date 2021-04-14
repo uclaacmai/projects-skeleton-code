@@ -1,4 +1,4 @@
-# ACM AI Winter 2021 Project Skeleton Code
+# ACM AI SPRING 2021 Project Skeleton Code
 
 ## Setup
 
