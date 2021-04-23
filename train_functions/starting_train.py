@@ -3,9 +3,22 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.utils.tensorboard
 
+def initializationFunction(training_dataset, val_dataset):
+    hyperparameters = {"epochs", "batch_size"}
+    hyperparameters["epochs"] = 20
+    hyperparameters["batch_size"] = 10
+    n_eval = .001
+
+    summary_path = "./log"
+
+    begin = CNN(3, 5)
+
+    starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path)
+
+
 
 def starting_train(
-    train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path
+    train_dataset, val_dataset, model , hyperparameters, n_eval, summary_path
 ):
     """
     Trains and evaluates a model.
@@ -40,19 +53,27 @@ def starting_train(
 
     step = 0
     for epoch in range(epochs):
-        print(f"Epoch {epoch + 1} of {epochs}")
+            
+        for batch in train_loader:
+            images, labels = batch
+            images = images.to(device)
+            labels = labels.to(device)
 
-        # Loop over each batch in the dataset
-        for i, batch in enumerate(train_loader):
-            print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
-
-            # TODO: Backpropagation and gradient descent
-
+            #probably need to reshape this is its not 784
+            images = torch.reshape(images, (-1,784))
+            outputs = model(images)
+            
+            loss = loss_fn(outputs, labels)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+            
             # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
                 # TODO:
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard.
+                evaluate(train_loader, model, loss_fn)
 
                 # TODO:
                 # Compute validation loss and accuracy.
@@ -62,7 +83,7 @@ def starting_train(
 
             step += 1
 
-        print()
+        print('Epoch:', epoch, 'Loss:', loss)
 
 
 def compute_accuracy(outputs, labels):
@@ -76,16 +97,43 @@ def compute_accuracy(outputs, labels):
     Example output:
         0.75
     """
+    n_correct = 0, total = 0
+    
 
-    n_correct = (torch.round(outputs) == labels).sum().item()
-    n_total = len(outputs)
-    return n_correct / n_total
+    n_correct += (torch.round(outputs) == labels).int().sum()
+    n_total += len(predictions)
+    
+    return (n_correct / n_total).item()
 
 
-def evaluate(val_loader, model, loss_fn):
+def evaluate(loader, model, loss_fn):
     """
     Computes the loss and accuracy of a model on the validation dataset.
 
-    TODO!
     """
-    pass
+    step = 0
+
+    optimizer = optim.Adam(model.parameters())
+    
+    for epoch in range(loader.batchsize)
+        with torch.no_grad():
+        for batch in loader:
+            images, labels = batch
+            
+            images = images.to(device)
+            labels = labels.to(device)
+            
+            output = model(images)
+            accuracy = compute_accuracy(output, labels)
+            loss = loss_fn(output, labels)
+            
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+            
+            
+            writer.add_scalar('train_loss', loss, global_step=step)
+            writer.add_scalar('accuracy', accuracy, global_step=step)
+
+            step += 1
+        print('Epoch:', epoch, 'Loss:', loss, 'Accuracy:', accuracy)
