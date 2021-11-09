@@ -22,6 +22,41 @@ python main.py
 
 [This notebook](https://colab.research.google.com/drive/1zkxwgDItHv92iD07M8o8FlfJ0ZxLUDly?usp=sharing) will walk you through setting the skeleton code up on Google Colab.
 
+**Note:** Google Colab may terminate your session after a few hours, so it may be a better idea to run your code on Kaggle (see below).
+
+### Running the Code on Kaggle
+
+**Note:** The instructions in this section may not be completely accurate. If there are any mistakes, please let us know!
+
+1. Navigate to the [code tab of the Kaggle competition](https://www.kaggle.com/c/cassava-leaf-disease-classification/code). Click on the "New Notebook" button to create a new notebook. The dataset should be automatically loaded in the `/kaggle/input` folder.
+
+2. To use the GPU, click the three dots in the top-right corner and select Accelerator > GPU.
+
+3. To access your code, run the following command (replacing the URL):
+
+   ```
+   !git clone "https://github.com/uclaacmai/projects-skeleton-code"
+   ```
+
+   This should clone your repository into the `/kaggle/working` folder.
+
+4. Change directories into your repository by running the command:
+
+   ```
+   cd <name of your repository>
+   ```
+
+5. You should now be able to import your code normally. For instance, the following code will import the starting code:
+
+   ```python
+   import constants
+   from datasets.StartingDataset import StartingDataset
+   from networks.StartingNetwork import StartingNetwork
+   from train_functions.starting_train import starting_train
+   ```
+
+6. If you want your code to run without keeping the tab open, you can click on "Save version" and commit your code. Make sure to save any outputs (e.g. log files) to the `/kaggle/output`, and you should be able to access them in the future.
+
 ## Downloading the Dataset From Kaggle
 
 ### Method 1: Downloading from kaggle.com
