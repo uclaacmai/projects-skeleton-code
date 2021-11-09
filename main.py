@@ -1,10 +1,10 @@
 import argparse
 import os
 
-#lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas 
+# lsfjalsdghlksghklghsaklghsadklghas fkldwgasglasgjslkfjsfklas
 
 import constants
-from datasets.StartingDataset import StartingDataset
+from data.StartingDataset import StartingDataset
 from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
 
