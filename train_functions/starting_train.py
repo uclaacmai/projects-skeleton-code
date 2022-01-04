@@ -1,12 +1,10 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import torch.utils.tensorboard
+from tqdm import tqdm
 
 
-def starting_train(
-    train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path
-):
+def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
     """
     Trains and evaluates a model.
 
@@ -16,7 +14,6 @@ def starting_train(
         model:           PyTorch model to be trained.
         hyperparameters: Dictionary containing hyperparameters.
         n_eval:          Interval at which we evaluate our model.
-        summary_path:    Path where Tensorboard summaries are located.
     """
 
     # Get keyword arguments
@@ -34,18 +31,12 @@ def starting_train(
     optimizer = optim.Adam(model.parameters())
     loss_fn = nn.CrossEntropyLoss()
 
-    # Initialize summary writer (for logging)
-    if summary_path is not None:
-        writer = torch.utils.tensorboard.SummaryWriter(summary_path)
-
     step = 0
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1} of {epochs}")
 
         # Loop over each batch in the dataset
-        for i, batch in enumerate(train_loader):
-            print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
-
+        for batch in tqdm(train_loader):
             # TODO: Backpropagation and gradient descent
 
             # Periodically evaluate our model + log to Tensorboard
