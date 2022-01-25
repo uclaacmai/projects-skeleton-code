@@ -1,4 +1,6 @@
-# ACM AI Projects Skeleton Code
+# ACM AI Project Winter 2022
+
+Brandon, Jordan, and Siddarth
 
 ## Setup
 
