@@ -1,10 +1,11 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from tqdm import tqdm
 
 
-def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
+def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameters, n_eval):
     """
     Trains and evaluates a model.
 
@@ -37,8 +38,20 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
 
         # Loop over each batch in the dataset
         for batch in tqdm(train_loader):
-            # TODO: Backpropagation and gradient descent
+            # TODO: Backpropagation and gradient descent determine which lines of code to use
+            images, labels = batch
+            outputs = model(images)
 
+            loss = loss_fn(outputs,labels)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+
+            batch_inputs = torch.reshape(batch_inputs, dimensions)
+            optimizer.zero_grad()
+            predictions = model(batch_inputs)
+            current_loss = loss_fn(predictions, labels)
+            current_loss.backward()
             # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
                 # TODO:
@@ -49,7 +62,7 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                evaluate(val_loader, model, loss_fn)
+                evaluate(val_loader, model, loss_fn, dimensions)
 
             step += 1
 
@@ -73,10 +86,14 @@ def compute_accuracy(outputs, labels):
     return n_correct / n_total
 
 
-def evaluate(val_loader, model, loss_fn):
-    """
-    Computes the loss and accuracy of a model on the validation dataset.
+def evaluate(val_loader, model, loss_fn, dimensions):
+    model.eval()
+    total, correct = 0, 0
 
-    TODO!
-    """
-    pass
+    for data in iter(val_loader):
+        inputs, labels = data
+        inputs = torch.reshape(inputs, dimensions)
+        predictions = model(inputs).argmax(axis=1)
+        total += len(labels)
+        correct += (predictions==labels).sum().item()
+    print(f"{100 * correct / total}%")
