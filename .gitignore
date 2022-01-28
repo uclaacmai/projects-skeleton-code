@@ -1,5 +1,7 @@
 __pycache__
 .vscode
+.DS_Store
 
 training_summaries
-data/
+data/cassava-leaf-disease-classification/
+data/.DS_Store
