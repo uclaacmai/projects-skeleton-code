@@ -4,7 +4,7 @@ import torch.optim as optim
 from tqdm import tqdm
 
 
-def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
+def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval, device):
     """
     Trains and evaluates a model.
 
@@ -31,6 +31,9 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
     optimizer = optim.Adam(model.parameters())
     loss_fn = nn.CrossEntropyLoss()
 
+    # Move the model to the GPU
+    model = model.to(device)
+
     step = 0
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1} of {epochs}")
@@ -38,6 +41,18 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
         # Loop over each batch in the dataset
         for batch in tqdm(train_loader):
             # TODO: Backpropagation and gradient descent
+            images, labels = batch
+            labels = torch.stack(list(labels), dim=0)
+
+            images = images.to(device)
+            labels = labels.to(device)
+
+            outputs = model(images)
+
+            loss = loss_fn(outputs, labels)
+            loss.backward()       # Compute gradients
+            optimizer.step()      # Update all the weights with the gradients you just calculated
+            optimizer.zero_grad()
 
             # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
@@ -45,15 +60,25 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval):
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard.
 
+                with torch.no_grad():
+                    images = images.to(device)
+                    labels = labels.to(device)
+
+                    predictions = torch.argmax(outputs, dim=1)
+
+                    accuracy = compute_accuracy(predictions, labels)
+                    print('Accuracy: ', accuracy)
+
                 # TODO:
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
                 evaluate(val_loader, model, loss_fn)
+                pass
 
             step += 1
 
-        print()
+        print('Epoch:', epoch, 'Loss:', loss.item())
 
 
 def compute_accuracy(outputs, labels):
@@ -79,4 +104,7 @@ def evaluate(val_loader, model, loss_fn):
 
     TODO!
     """
+
+    model.eval()
+    model.train()
     pass

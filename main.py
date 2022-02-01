@@ -1,24 +1,28 @@
 import os
 
 import constants
+import torch
 from data.StartingDataset import StartingDataset
 from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
+from PIL import Image
 
 
 def main():
     # Get command line arguments
     hyperparameters = {"epochs": constants.EPOCHS, "batch_size": constants.BATCH_SIZE}
 
-    # TODO: Add GPU support. This line of code might be helpful.
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    # Add GPU support. This line of code might be helpful.
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     print("Epochs:", constants.EPOCHS)
     print("Batch size:", constants.BATCH_SIZE)
 
     # Initalize dataset and model. Then train the model!
-    train_dataset = StartingDataset()
-    val_dataset = StartingDataset()
+    data = StartingDataset("/train/")
+    train_size = int(0.7 * len(data))
+    test_size = len(data) - train_size
+    train_dataset, val_dataset = torch.utils.data.random_split(data, [train_size, test_size])
     model = StartingNetwork()
     starting_train(
         train_dataset=train_dataset,
@@ -26,6 +30,7 @@ def main():
         model=model,
         hyperparameters=hyperparameters,
         n_eval=constants.N_EVAL,
+        device = device
     )
 
 

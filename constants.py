@@ -1,4 +1,4 @@
 EPOCHS = 100
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 N_EVAL = 100
 DATA = "../50whales/sauce"
