@@ -74,8 +74,8 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
                 # TODO:
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard.
-                writer.add_scalar("Accuracy", compute_accuracy(predictions, batch_labels))
-                writer.add_scalar("Loss", current_loss)
+                writer.add_scalar("Train Accuracy", compute_accuracy(predictions, batch_labels))
+                writer.add_scalar("Train Loss", current_loss)
                 # go to http://localhost:6006/ to view the Tensorboard
 
                 # TODO:
