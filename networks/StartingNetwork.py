@@ -46,6 +46,6 @@ class StartingNetwork(nn.Module):
     
 if __name__ == "__main__":
     model = StartingNetwork()
-    test_im = torch.tensor(150, 200, 3)
+    test_im = torch.zeros(256, 3, 150, 200)
     x = model.forward(test_im)
-    print("")
+    print(x.size())
