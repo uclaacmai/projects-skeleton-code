@@ -1,5 +1,6 @@
 from ctypes import resize
 import torch
+import pandas as pd
 from PIL import Image
 
 INPUT_WIDTH=200
@@ -10,15 +11,16 @@ class StartingDataset(torch.utils.data.Dataset):
     Dataset that contains 100000 3x224x224 black images (all zeros).
     """
 
-    def __init__(self, pictures, labels):
-        self.pictures = pictures
-        self.labels = labels
+    def __init__(self, i, j):
+        df = pd.read_csv("cassava-leaf-disease-classification/train.csv")
+        self.pictures = df["image_id"][i:j]
+        self.labels = df["label"][i:j]
 
     def __getitem__(self, index):
         # Grab a single training example
         picture = self.pictures[index]
         # Load and resize the desired image
-        im = self.resizeImage(picture)
+        im = self.resizeImage("cassava-leaf-disease-classification/train_images/" + picture)
         label = self.labels[index]
         example = (im, label)
 

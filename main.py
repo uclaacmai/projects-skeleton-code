@@ -2,6 +2,7 @@ import os
 
 import constants
 import torch
+import pandas as pd
 from data.StartingDataset import StartingDataset
 from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
@@ -20,9 +21,10 @@ def main():
     dimensions = [200, 150]
 
     # Initalize dataset and model. Then train the model!
-    train_dataset = StartingDataset()
-    val_dataset = StartingDataset()
-    model = StartingNetwork(dimensions)
+    
+    train_dataset = StartingDataset(0, 999)
+    val_dataset = StartingDataset(1000, 1999)
+    model = StartingNetwork()
     model = model.to(device)
     
     starting_train(
