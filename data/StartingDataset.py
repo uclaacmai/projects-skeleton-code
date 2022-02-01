@@ -2,7 +2,6 @@ from ctypes import resize
 import torch
 from PIL import Image
 
-#TODO: Move constants to constants.py
 INPUT_WIDTH=200
 INPUT_HEIGHT=150
 
@@ -36,4 +35,4 @@ class StartingDataset(torch.utils.data.Dataset):
 
 if __name__ == "__main__":
     datasetInstance = StartingDataset(["data/cassava-leaf-disease-classification/train_images/1000015157.jpg"], [0])
-    # datasetInstance.resizeImage(datasetInstance.pictures[0])
+    datasetInstance.resizeImage(datasetInstance.pictures[0])
