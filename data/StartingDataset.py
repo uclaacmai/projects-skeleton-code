@@ -12,7 +12,7 @@ class StartingDataset(torch.utils.data.Dataset):
     """
 
     def __init__(self, i, j):
-        df = pd.read_csv("cassava-leaf-disease-classification/train.csv")
+        df = pd.read_csv("data/cassava-leaf-disease-classification/train.csv")
         self.pictures = df["image_id"][i:j]
         self.labels = df["label"][i:j]
 
@@ -20,7 +20,7 @@ class StartingDataset(torch.utils.data.Dataset):
         # Grab a single training example
         picture = self.pictures[index]
         # Load and resize the desired image
-        im = self.resizeImage("cassava-leaf-disease-classification/train_images/" + picture)
+        im = self.resizeImage("data/cassava-leaf-disease-classification/train_images/" + picture)
         label = self.labels[index]
         example = (im, label)
 
