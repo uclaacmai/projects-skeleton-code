@@ -63,12 +63,16 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
             # optimizer.zero_grad()
 
             batch_inputs, batch_labels = data
-
+            
             batch_inputs = torch.reshape(batch_inputs, dimensions)
             optimizer.zero_grad()
             predictions = model(batch_inputs)
+            # print(batch_labels)
             current_loss = loss_fn(predictions, batch_labels)
-            
+            predictions = torch.argmax(predictions, dim=1).double()
+            batch_labels = batch_labels.double()
+
+            # print(predictions)
             # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
                 # TODO:
@@ -82,27 +86,27 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                model.eval()
+                #for val_data in val_loader:
+                   # model.eval()
 
-                eval_inputs, eval_labels = val_loader
-                eval_predictions = model(eval_inputs)
+                    #eval_inputs, eval_labels = val_data
+                    #eval_predictions = model(eval_inputs)
+                
+                    #writer.add_scalar("Eval Accuracy", compute_accuracy(eval_predictions,eval_labels))
+                    #writer.add_scalar("Eval Loss", loss_fn(eval_predictions, eval_labels))
 
-                writer.add_scalar("Eval Accuracy", compute_accuracy(eval_predictions,eval_labels))
-                writer.add_scalar("Eval Loss", loss_fn(eval_predictions, eval_labels))
-
-                model.train()
+                    #model.train()
                 
             step += 1
             current_loss.backward()
             optimizer.step()
         
-        evaluate(val_loader, model, loss_fn, dimensions)
+        #evaluate(val_loader, model, loss_fn, dimensions)
 
         print()
 
     writer.flush()
     writer.close()
-
 
 def compute_accuracy(outputs, labels):
     """
@@ -115,7 +119,6 @@ def compute_accuracy(outputs, labels):
     Example output:
         0.75
     """
-
     n_correct = (torch.round(outputs) == labels).sum().item()
     n_total = len(outputs)
     return n_correct / n_total

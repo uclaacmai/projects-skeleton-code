@@ -2,6 +2,7 @@ from ctypes import resize
 import torch
 import pandas as pd
 from PIL import Image
+from torchvision.transforms import transforms
 
 INPUT_WIDTH=200
 INPUT_HEIGHT=150
@@ -22,6 +23,8 @@ class StartingDataset(torch.utils.data.Dataset):
         # Load and resize the desired image
         im = self.resizeImage("data/cassava-leaf-disease-classification/train_images/" + picture)
         label = self.labels[index]
+        trans = transforms.ToTensor()
+        im = trans(im)
         example = (im, label)
 
         return example
