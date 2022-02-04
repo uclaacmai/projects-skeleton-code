@@ -18,8 +18,7 @@ class StartingDataset(torch.utils.data.Dataset):
         self.images = self.data.iloc[:, 0]
         self.labels = self.data.iloc[:, 1]
         self.transition = list(set(self.labels))
-        self.whales = self.labels.replace(self.transition, list(range(1,5006)))
-
+        self.whales = self.labels.replace(self.transition, list(range(5005)))
 
     def __getitem__(self, index):
         image = Image.open(constants.DATA + self.path + self.images[index])

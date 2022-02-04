@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from tqdm import tqdm
+# from torch.utils.tensorboard import SummaryWriter
 
 
 def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval, device):
@@ -34,7 +35,9 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval, d
     # Move the model to the GPU
     model = model.to(device)
 
-    step = 0
+    step = 1
+
+    # tb = SummaryWriter()
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1} of {epochs}")
 
@@ -55,30 +58,30 @@ def starting_train(train_dataset, val_dataset, model, hyperparameters, n_eval, d
             optimizer.zero_grad()
 
             # Periodically evaluate our model + log to Tensorboard
-            if step % n_eval == 0:
+            # if step % n_eval == 0:
                 # TODO:
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard.
 
-                with torch.no_grad():
-                    images = images.to(device)
-                    labels = labels.to(device)
+                # with torch.no_grad():
+                #     images = images.to(device)
+                #     labels = labels.to(device)
 
-                    predictions = torch.argmax(outputs, dim=1)
+                #     predictions = torch.argmax(outputs, dim=1)
 
-                    accuracy = compute_accuracy(predictions, labels)
-                    print('Accuracy: ', accuracy)
+                #     accuracy = compute_accuracy(predictions, labels)
+                #     print('Accuracy: ', accuracy)
 
                 # TODO:
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                evaluate(val_loader, model, loss_fn)
-                pass
 
             step += 1
 
         print('Epoch:', epoch, 'Loss:', loss.item())
+    evaluate(val_loader, model, loss_fn, device)
+    # tb.close()
 
 
 def compute_accuracy(outputs, labels):
@@ -93,18 +96,43 @@ def compute_accuracy(outputs, labels):
         0.75
     """
 
-    n_correct = (torch.round(outputs) == labels).sum().item()
+    n_correct = (outputs == labels).int().sum()
     n_total = len(outputs)
     return n_correct / n_total
 
 
-def evaluate(val_loader, model, loss_fn):
+def evaluate(val_loader, model, loss_fn, device):
     """
     Computes the loss and accuracy of a model on the validation dataset.
-
-    TODO!
     """
 
     model.eval()
+
+    correct = 0
+    total = 0
+    loss = 0
+    with torch.no_grad(): # IMPORTANT: turn off gradient computations
+        for batch in val_loader:
+            images, labels = batch
+            images = images.to(device)
+            labels = labels.to(device)
+
+            outputs = model(images)
+            predictions = torch.argmax(outputs, dim=1)
+
+            # labels == predictions does an elementwise comparison
+            # e.g.                labels = [1, 2, 3, 4]
+            #                predictions = [1, 4, 3, 3]
+            #      labels == predictions = [1, 0, 1, 0]  (where 1 is true, 0 is false)
+            # So the number of correct predictions is the sum of (labels == predictions)
+            correct += (labels == predictions).int().sum()
+            total += len(predictions)
+            loss += loss_fn(outputs, labels)
+
+    
+        print(correct / total)
     model.train()
-    pass
+
+    # tb.add_scalar("Loss", loss, epoch)
+    # tb.add_scalar("Correct", correct, epoch)
+    # tb.add_scalar("Accuracy", correct / total, epoch)
