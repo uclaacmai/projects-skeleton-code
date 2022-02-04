@@ -86,22 +86,22 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                #for val_data in val_loader:
-                   # model.eval()
+                # for val_data in val_loader:
+                #    model.eval()
 
-                    #eval_inputs, eval_labels = val_data
-                    #eval_predictions = model(eval_inputs)
+                #     eval_inputs, eval_labels = val_data
+                #     eval_predictions = model(eval_inputs)
                 
-                    #writer.add_scalar("Eval Accuracy", compute_accuracy(eval_predictions,eval_labels))
-                    #writer.add_scalar("Eval Loss", loss_fn(eval_predictions, eval_labels))
+                #     writer.add_scalar("Eval Accuracy", compute_accuracy(eval_predictions,eval_labels))
+                #     writer.add_scalar("Eval Loss", loss_fn(eval_predictions, eval_labels))
 
-                    #model.train()
+                #     model.train()
                 
             step += 1
             current_loss.backward()
             optimizer.step()
         
-        #evaluate(val_loader, model, loss_fn, dimensions)
+        evaluate(val_loader, model, loss_fn, dimensions)
 
         print()
 

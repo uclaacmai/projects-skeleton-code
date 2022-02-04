@@ -19,10 +19,10 @@ class StartingDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         # Grab a single training example
-        picture = self.pictures[index]
+        picture = self.pictures.iloc[index]
         # Load and resize the desired image
         im = self.resizeImage("data/cassava-leaf-disease-classification/train_images/" + picture)
-        label = self.labels[index]
+        label = self.labels.iloc[index]
         trans = transforms.ToTensor()
         im = trans(im)
         example = (im, label)

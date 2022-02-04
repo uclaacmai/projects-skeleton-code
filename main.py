@@ -21,8 +21,8 @@ def main():
 
     # Initalize dataset and model. Then train the model!
     
-    train_dataset = StartingDataset(0, 192)
-    val_dataset = StartingDataset(192, 384)
+    train_dataset = StartingDataset(0, (21000 * 0.8 // 32) * 32)
+    val_dataset = StartingDataset((21000 * 0.8 // 32) * 32, 21000 // 32 * 32)
     model = StartingNetwork()
     model = model.to(device)
     
