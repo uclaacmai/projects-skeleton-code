@@ -3,10 +3,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 from tqdm import tqdm
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 
-def evaluate(val_loader, model, loss_fn, dimensions):
+def evaluate(val_loader, model, dimensions):
     model.eval()
     total, correct = 0, 0
 
@@ -33,7 +33,7 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
         hyperparameters: Dictionary containing hyperparameters.
         n_eval:          Interval at which we evaluate our model.
     """
-    writer = SummaryWriter()
+    # writer = SummaryWriter()
     # Get keyword arguments
     batch_size, epochs = hyperparameters["batch_size"], hyperparameters["epochs"]
 
@@ -70,48 +70,47 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
             predictions = model(batch_inputs)
             # print(batch_labels)
             current_loss = loss_fn(predictions, batch_labels)
-            predictions1 = torch.argmax(predictions, dim=1).double()
+            # predictions1 = torch.argmax(predictions, dim=1).double()
             batch_labels = batch_labels.double()
 
             # print(predictions)
             # Periodically evaluate our model + log to Tensorboard
-            if step % n_eval == 0:
+            # if step % n_eval == 0:
                 # TODO:
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard.
-                writer.add_scalar("Train Accuracy", compute_accuracy(predictions1, batch_labels))
-                writer.add_scalar("Train Loss", current_loss)
+                # writer.add_scalar("Train Accuracy", compute_accuracy(predictions1, batch_labels))
+                # writer.add_scalar("Train Loss", current_loss)
                 # go to http://localhost:6006/ to view the Tensorboard
 
                 # TODO:
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
-                # Don't forget to turn off gradient calculations!
+                # Don't forget to turn off gradient calculations! 
                 
-                
-                model.eval()
-                total, correct = 0, 0
-                for data in iter(val_loader):
-                    inputs, labels = data
-                    inputs = torch.reshape(inputs, dimensions)
-                    predictions1 = model(inputs).argmax(axis=1)
-                    total += len(labels)
-                    correct += (predictions1==labels).sum().item()
+                # model.eval()
+                # total, correct = 0, 0
+                # for data in iter(val_loader):
+                #    inputs, labels = data
+                #    inputs = torch.reshape(inputs, dimensions)
+                #    predictions1 = model(inputs).argmax(axis=1)
+                #    total += len(labels)
+                #    correct += (predictions1==labels).sum().item()
     
-                writer.add_scalar("Validation Accuracy", 100 * correct/total)
-                writer.add_scalar("Validation Loss", loss_fn(predictions,labels).mean().item())
-                model.train()
+                # writer.add_scalar("Validation Accuracy", 100 * correct/total)
+                # writer.add_scalar("Validation Loss", loss_fn(predictions,labels).mean().item())
+                # model.train()
             # print(loss_fn(predictions,labels).mean().item())
-            step += 1
+            # step += 1
             current_loss.backward()
             optimizer.step()
         
-        evaluate(val_loader, model, loss_fn, dimensions)
+        evaluate(val_loader, model, dimensions)
 
         print()
 
-    writer.flush()
-    writer.close()
+    # writer.flush()
+    # writer.close()
 
 def compute_accuracy(outputs, labels):
     """

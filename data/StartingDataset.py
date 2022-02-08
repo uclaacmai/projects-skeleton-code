@@ -12,11 +12,12 @@ class StartingDataset(torch.utils.data.Dataset):
     Dataset that contains 100000 3x224x224 black images (all zeros).
     """
 
-    def __init__(self, i, j, path):
+    def __init__(self, i, j, path, device):
         self.path = path
         df = pd.read_csv(path + "/cassava-leaf-disease-classification/train.csv")
         self.pictures = df["image_id"][i:j]
         self.labels = df["label"][i:j]
+        self.device = device
 
     def __getitem__(self, index):
         # Grab a single training example
