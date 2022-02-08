@@ -12,8 +12,9 @@ class StartingDataset(torch.utils.data.Dataset):
     Dataset that contains 100000 3x224x224 black images (all zeros).
     """
 
-    def __init__(self, i, j):
-        df = pd.read_csv("data/cassava-leaf-disease-classification/train.csv")
+    def __init__(self, i, j, path):
+        self.path = path
+        df = pd.read_csv(path + "/cassava-leaf-disease-classification/train.csv")
         self.pictures = df["image_id"][i:j]
         self.labels = df["label"][i:j]
 
@@ -21,7 +22,7 @@ class StartingDataset(torch.utils.data.Dataset):
         # Grab a single training example
         picture = self.pictures.iloc[index]
         # Load and resize the desired image
-        im = self.resizeImage("data/cassava-leaf-disease-classification/train_images/" + picture)
+        im = self.resizeImage(self.path + "/cassava-leaf-disease-classification/train_images/" + picture)
         label = self.labels.iloc[index]
         trans = transforms.ToTensor()
         im = trans(im)
@@ -38,6 +39,6 @@ class StartingDataset(torch.utils.data.Dataset):
         # im.show()
         return im
 
-if __name__ == "__main__":
-    datasetInstance = StartingDataset(["data/cassava-leaf-disease-classification/train_images/1000015157.jpg"], [0])
-    datasetInstance.resizeImage(datasetInstance.pictures[0])
+# if __name__ == "__main__":
+#     datasetInstance = StartingDataset(["data/cassava-leaf-disease-classification/train_images/1000015157.jpg"], [0])
+#     datasetInstance.resizeImage(datasetInstance.pictures[0])

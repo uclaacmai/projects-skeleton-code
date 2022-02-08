@@ -14,6 +14,8 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    PATH = "data/"
+
     print("Epochs:", constants.EPOCHS)
     print("Batch size:", constants.BATCH_SIZE)
 
@@ -21,8 +23,10 @@ def main():
 
     # Initalize dataset and model. Then train the model!
     
-    train_dataset = StartingDataset(0, (21000 * 0.8 // 32) * 32)
-    val_dataset = StartingDataset((21000 * 0.8 // 32) * 32, 21000 // 32 * 32)
+    # train_dataset = StartingDataset(0, (21000 * 0.8 // 32) * 32, PATH)
+    # val_dataset = StartingDataset((21000 * 0.8 // 32) * 32, 21000 // 32 * 32, PATH)
+    train_dataset = StartingDataset(0, 192, PATH)
+    val_dataset = StartingDataset(192, 384, PATH)
     model = StartingNetwork()
     model = model.to(device)
     
