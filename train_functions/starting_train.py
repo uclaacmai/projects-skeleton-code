@@ -18,6 +18,7 @@ def evaluate(val_loader, model, loss_fn, dimensions):
         correct += (predictions==labels).sum().item()
     
     print(f"{100 * correct / total}%")
+    model.train()
 
 
 
@@ -69,7 +70,7 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
             predictions = model(batch_inputs)
             # print(batch_labels)
             current_loss = loss_fn(predictions, batch_labels)
-            predictions = torch.argmax(predictions, dim=1).double()
+            predictions1 = torch.argmax(predictions, dim=1).double()
             batch_labels = batch_labels.double()
 
             # print(predictions)
@@ -78,7 +79,7 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
                 # TODO:
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard.
-                writer.add_scalar("Train Accuracy", compute_accuracy(predictions, batch_labels))
+                writer.add_scalar("Train Accuracy", compute_accuracy(predictions1, batch_labels))
                 writer.add_scalar("Train Loss", current_loss)
                 # go to http://localhost:6006/ to view the Tensorboard
 
@@ -86,17 +87,21 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                # for val_data in val_loader:
-                #    model.eval()
-
-                #     eval_inputs, eval_labels = val_data
-                #     eval_predictions = model(eval_inputs)
                 
-                #     writer.add_scalar("Eval Accuracy", compute_accuracy(eval_predictions,eval_labels))
-                #     writer.add_scalar("Eval Loss", loss_fn(eval_predictions, eval_labels))
-
-                #     model.train()
                 
+                model.eval()
+                total, correct = 0, 0
+                for data in iter(val_loader):
+                    inputs, labels = data
+                    inputs = torch.reshape(inputs, dimensions)
+                    predictions1 = model(inputs).argmax(axis=1)
+                    total += len(labels)
+                    correct += (predictions1==labels).sum().item()
+    
+                writer.add_scalar("Validation Accuracy", 100 * correct/total)
+                writer.add_scalar("Validation Loss", loss_fn(predictions,labels).mean().item())
+                model.train()
+            # print(loss_fn(predictions,labels).mean().item())
             step += 1
             current_loss.backward()
             optimizer.step()

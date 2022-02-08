@@ -11,11 +11,16 @@ class StartingNetwork(nn.Module):
         # 150 x 200 x 3
         self.conv1 = nn.Conv2d(3, 6, kernel_size=5, padding=2)
 
+        self.bn1 = nn.BatchNorm2d(6)
+
         # 150 x 200 x 6
         self.pool1 = nn.MaxPool2d(2, 2)
 
         # 75 x 100 x 6
         self.conv2 = nn.Conv2d(6, 8, kernel_size=5, padding=0)
+
+        self.bn2 = nn.BatchNorm2d(8)
+
 
         # 71 x 96 x 8
         self.pool2 = nn.MaxPool2d(2, 2, ceil_mode=True)
@@ -27,10 +32,10 @@ class StartingNetwork(nn.Module):
 
     def forward(self, x):
         # Forward propagation
-        x = self.conv1(x)
+        x = self.bn1(self.conv1(x))
         x = F.relu(x)
         x = self.pool1(x)
-        x = self.conv2(x)
+        x = self.bn2(self.conv2(x))
         x = F.relu(x)
         x = self.pool2(x)
 

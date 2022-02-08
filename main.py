@@ -25,8 +25,8 @@ def main():
     
     # train_dataset = StartingDataset(0, (21000 * 0.8 // 32) * 32, PATH)
     # val_dataset = StartingDataset((21000 * 0.8 // 32) * 32, 21000 // 32 * 32, PATH)
-    train_dataset = StartingDataset(0, 192, PATH)
-    val_dataset = StartingDataset(192, 384, PATH)
+    train_dataset = StartingDataset(0, 1920, PATH)
+    val_dataset = StartingDataset(1920, 3840, PATH)
     model = StartingNetwork()
     model = model.to(device)
     

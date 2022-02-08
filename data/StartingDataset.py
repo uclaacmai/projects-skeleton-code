@@ -26,6 +26,8 @@ class StartingDataset(torch.utils.data.Dataset):
         label = self.labels.iloc[index]
         trans = transforms.ToTensor()
         im = trans(im)
+        # normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        # normalize(im) # convert image to tensor first!
         example = (im, label)
 
         return example
