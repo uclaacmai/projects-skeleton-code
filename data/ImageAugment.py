@@ -17,6 +17,7 @@ class ImageAugment(torch.utils.data.Dataset):
         self.transition = list(set(self.labels))
         self.whales = self.labels.replace(self.transition, list(range(5005)))
 
+        for index in range(5005):
             
 
     def __getitem__(self, index):
@@ -33,5 +34,3 @@ class ImageAugment(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.labels)
 
-    def augment(self, index):
-        
