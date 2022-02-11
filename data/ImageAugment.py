@@ -4,6 +4,8 @@ from PIL import ImageOps
 import pandas as pd
 import constants
 import torchvision
+import torchvision.transforms.functional
+import numpy as np
 
 
 class ImageAugment(torch.utils.data.Dataset):
@@ -17,10 +19,7 @@ class ImageAugment(torch.utils.data.Dataset):
         self.transition = list(set(self.labels))
         self.whales = self.labels.replace(self.transition, list(range(5005)))
 
-        self.transform1 = torchvision.transforms.Compose([
-            torchvision.transforms.CenterCrop(200),
-            torchvision.transforms.function.resize((448,224))
-        ])
+        self.transform1 = torchvision.transforms.RandomResizedCrop(size = (448,224), scale = (0.5, 0.75))
 
         self.transform2 = torchvision.transforms.ColorJitter()
 
@@ -35,27 +34,29 @@ class ImageAugment(torch.utils.data.Dataset):
         image = image.resize((448, 224))
         image = ImageOps.grayscale(image)
 
-        return torchvision.transforms.functional.pil_to_tensor(image), label
+        image = torchvision.transforms.ToTensor()(np.array(image))
+
+        return image, label
 
 
     def __len__(self):
         return len(self.labels)
 
-    def augment(self, index);
-        image, label = ImageAugment.__getitem__(index)
+    # def augment(self, index):
+    #     image, label = ImageAugment.__getitem__(index)
 
-        self.images.append(self.transform1(image))
-        self.labels.append(index)
-        
-        self.images.append(self.transform2(image))
-        self.labels.append(index)
+    #     self.images.append(self.transform1(image))
+    #     self.labels.append(index)
 
-        self.images.append(self.transform2(image))
-        self.labels.append(index)
+    #     self.images.append(self.transform2(image))
+    #     self.labels.append(index)
 
-        self.images.append(self.transform3(image))
-        self.labels.append(index)
+    #     self.images.append(self.transform2(image))
+    #     self.labels.append(index)
 
-        self.images.append(self.transform3(image))
-        self.labels.append(index)
+    #     self.images.append(self.transform3(image))
+    #     self.labels.append(index)
+
+    #     self.images.append(self.transform3(image))
+    #     self.labels.append(index)
 
