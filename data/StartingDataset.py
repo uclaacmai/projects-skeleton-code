@@ -19,6 +19,15 @@ class StartingDataset(torch.utils.data.Dataset):
         self.labels = df["label"][i:j]
         self.device = device
 
+        #for i in range(self.pictures.size):
+            #if(self.labels[i] != 3):
+                #self.pictures.append(self.pictures[i].split()[0] + "_r.jpg")
+            
+        # if label is 1, 2, 4, 0: add transformations needed to balance data
+        # append _something to the end of filename to specify transformation later
+        # call .sample to shuffle data afterwards
+            
+
     def __getitem__(self, index):
         # Grab a single training example
         picture = self.pictures.iloc[index]
@@ -27,6 +36,8 @@ class StartingDataset(torch.utils.data.Dataset):
         label = self.labels.iloc[index]
         trans = transforms.ToTensor()
         im = trans(im)
+        # perform transformation if filename has _ in it
+        
         # normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         # normalize(im) # convert image to tensor first!
         example = (im, label)
