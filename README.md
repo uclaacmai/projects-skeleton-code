@@ -1,4 +1,4 @@
-# ACM AI Projects Skeleton Code
+# 50Whales Skeleton Code
 
 ## Setup
 
