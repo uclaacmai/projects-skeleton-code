@@ -22,6 +22,9 @@ def main():
 
     # Initalize dataset and model. Then train the model!
     data = ImageAugment("/train/")
+    currentlen = len(data)
+    for i in range(currentlen):
+        data.augment(i)
     train_size = int(0.7 * len(data))
     test_size = len(data) - train_size
     train_dataset, val_dataset = torch.utils.data.random_split(data, [train_size, test_size])

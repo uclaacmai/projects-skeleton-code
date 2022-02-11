@@ -23,7 +23,10 @@ class ImageAugment(torch.utils.data.Dataset):
 
         self.transform2 = torchvision.transforms.ColorJitter()
 
-        self.transform3 = torchvision.transforms.RandomRotation(180)
+        self.transform3 = torchvision.transforms.RandomAffine(180)
+
+        self.augmentedimages = []
+        self.augmentedlabels = []
             
 
     def __getitem__(self, index):
@@ -42,21 +45,42 @@ class ImageAugment(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.labels)
 
-    # def augment(self, index):
-    #     image, label = ImageAugment.__getitem__(index)
+    def cutout(self, image):
+        size = 30
+        x = np.random.randint(448)
+        y = np.random.randint(224)
+        y1 = np.clip(y - size // 2, 0, 224)
+        y2 = np.clip(y + size // 2, 0, 224)
+        x1 = np.clip(x - size // 2, 0, 448)
+        x2 = np.clip(x + size // 2, 0, 448)
+        image[y1:y2, x1:x2] = 0
 
-    #     self.images.append(self.transform1(image))
-    #     self.labels.append(index)
 
-    #     self.images.append(self.transform2(image))
-    #     self.labels.append(index)
 
-    #     self.images.append(self.transform2(image))
-    #     self.labels.append(index)
+    def augment(self, index):
+        image = Image.open(constants.DATA + self.path + self.images[index])
 
-    #     self.images.append(self.transform3(image))
-    #     self.labels.append(index)
+        image = image.resize((448,224))
 
-    #     self.images.append(self.transform3(image))
-    #     self.labels.append(index)
+        self.augmentedimages.append(torchvision.transforms.ToTensor()(np.array(self.transform1(image))))
+        self.augmentedlabels.append(index)
+
+        self.augmentedimages.append(torchvision.transforms.ToTensor()(np.array(self.transform2(image))))
+        self.augmentedlabels.append(index)
+
+        self.augmentedimages.append(torchvision.transforms.ToTensor()(np.array(self.transform2(image))))
+        self.augmentedlabels.append(index)
+
+        self.augmentedimages.append(torchvision.transforms.ToTensor()(np.array(self.transform3(image))))
+        self.augmentedlabels.append(index)
+
+        self.augmentedimages.append(torchvision.transforms.ToTensor()(np.array(self.transform3(image))))
+        self.augmentedlabels.append(index)
+
+        self.augmentedimages.append(torchvision.transforms.ToTensor()(np.array(image + torch.std(image)*torch.randn(image.size))))
+        self.augmentedlabels.append(index)
+
+        self.augmentedimages.append(torchvision.transforms.ToTensor()(np.array(self.cutout(self, image))))
+
+
 
