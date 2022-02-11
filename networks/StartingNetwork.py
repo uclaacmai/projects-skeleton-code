@@ -8,6 +8,8 @@ class StartingNetwork(nn.Module):
         # Call nn.Module's constructor
         super().__init__()
         
+        # Transfer resnet model (do later after data augmentation, batch normalization)
+
         # 150 x 200 x 3
         self.conv1 = nn.Conv2d(3, 6, kernel_size=5, padding=2)
 
