@@ -22,7 +22,7 @@ def evaluate(val_loader, model, dimensions):
 
 
 
-def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameters, n_eval):
+def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameters, n_eval, device):
     """
     Trains and evaluates a model.
 

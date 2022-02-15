@@ -4,8 +4,8 @@ import pandas as pd
 from PIL import Image
 from torchvision.transforms import transforms
 
-INPUT_WIDTH=200
-INPUT_HEIGHT=150
+INPUT_WIDTH=224
+INPUT_HEIGHT=224
 
 class StartingDataset(torch.utils.data.Dataset):
     """
@@ -19,9 +19,11 @@ class StartingDataset(torch.utils.data.Dataset):
         self.labels = df["label"][i:j]
         self.device = device
 
-        #for i in range(self.pictures.size):
-            #if(self.labels[i] != 3):
-                #self.pictures.append(self.pictures[i].split()[0] + "_r.jpg")
+        for i in range(len(self.pictures)):
+            if(self.labels.iloc[i] != 3):
+                self.pictures.append(self.pictures.iloc[i][:-4] + "_r.jpg")
+                #self.pictures.append(self.pictures.iloc[i][:-4] + "_h.jpg")
+
             
         # if label is 1, 2, 4, 0: add transformations needed to balance data
         # append _something to the end of filename to specify transformation later
@@ -31,15 +33,21 @@ class StartingDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         # Grab a single training example
         picture = self.pictures.iloc[index]
+        picture.replace("_r","")
         # Load and resize the desired image
         im = self.resizeImage(self.path + "/cassava-leaf-disease-classification/train_images/" + picture)
         label = self.labels.iloc[index]
         trans = transforms.ToTensor()
         im = trans(im)
+        if(self.pictures.iloc[index].endswith("_r.jpg")):
+            im = transforms.rotate(im, 45)
+        
         # perform transformation if filename has _ in it
         
-        # normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         # normalize(im) # convert image to tensor first!
+        if self.device != "cpu":
+            im = im.cuda()
         example = (im, label)
 
         return example
