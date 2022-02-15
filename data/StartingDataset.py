@@ -18,13 +18,13 @@ class StartingDataset(torch.utils.data.Dataset):
         self.pictures = df["image_id"][i:j]
         self.labels = df["label"][i:j]
         self.device = device
+        #convert to list
+        #pictures_dup = self.pictures.iloc[i][:-4].to_frame().copy()
 
-        for i in range(len(self.pictures)):
-            if(self.labels.iloc[i] != 3):
-                self.pictures.append(self.pictures.iloc[i][:-4] + "_r.jpg")
-                #self.pictures.append(self.pictures.iloc[i][:-4] + "_h.jpg")
+       #for i in range(len(self.pictures)):
+            #if(self.labels.iloc[i] != 3):
+                #self.pictures = pd.concat([self.pictures, pictures_dup], ignore_index=True)
 
-            
         # if label is 1, 2, 4, 0: add transformations needed to balance data
         # append _something to the end of filename to specify transformation later
         # call .sample to shuffle data afterwards

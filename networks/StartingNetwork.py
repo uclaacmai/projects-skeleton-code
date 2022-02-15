@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
+#RuntimeError: mat1 and mat2 shapes cannot be multiplied (16384x1 and 1000x512)
 class StartingNetwork(nn.Module):
     def __init__(self):
         # Call nn.Module's constructor
@@ -11,13 +11,12 @@ class StartingNetwork(nn.Module):
         # Transfer resnet model (do later after data augmentation, batch normalization)
         self.model_a = torch.hub.load('pytorch/vision:v0.9.0', 'resnet18', pretrained=True)
         # Remove last layer
-        self.model_a = torch.nn.Sequential(*(list(self.model.children())[:-1]))
-        # Add a few more FC Layers
-
+        self.model_a = torch.nn.Sequential(*(list(self.model_a.children())[:-1]))
         # Output of ResNet: 1000-d tensor
         self.fc1 = nn.Linear(1000, 512)
         self.fc2 = nn.Linear(512, 128)
         self.fc3 = nn.Linear(128, 5)
+
         # # 150 x 200 x 3
         # self.conv1 = nn.Conv2d(3, 6, kernel_size=5, padding=2)
 

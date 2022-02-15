@@ -12,12 +12,12 @@ def main():
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    PATH = "/kaggle/input"
+    PATH = "data/"
 
     print("Epochs:", constants.EPOCHS)
     print("Batch size:", constants.BATCH_SIZE)
 
-    dimensions = [constants.BATCH_SIZE, 3, 200, 150]
+    dimensions = [constants.BATCH_SIZE, 3, 224, 224]
 
     # Initalize dataset and model. Then train the model!
     
