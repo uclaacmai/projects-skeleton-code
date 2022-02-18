@@ -15,15 +15,14 @@ class StartingDataset(torch.utils.data.Dataset):
     def __init__(self, i, j, path, device):
         self.path = path
         df = pd.read_csv(path + "/cassava-leaf-disease-classification/train.csv")
-        self.pictures = df["image_id"][i:j]
-        self.labels = df["label"][i:j]
+        self.pictures = df["image_id"][i:j].tolist()
+        self.labels = df["label"][i:j].tolist()
         self.device = device
         #convert to list
-        #pictures_dup = self.pictures.iloc[i][:-4].to_frame().copy()
 
-       #for i in range(len(self.pictures)):
-            #if(self.labels.iloc[i] != 3):
-                #self.pictures = pd.concat([self.pictures, pictures_dup], ignore_index=True)
+        for i in range(len(self.pictures)):
+            if(self.labels[i] != 3):
+                self.pictures.append(self.pictures[i][:-4] + "_r.jpg")
 
         # if label is 1, 2, 4, 0: add transformations needed to balance data
         # append _something to the end of filename to specify transformation later
@@ -32,14 +31,14 @@ class StartingDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         # Grab a single training example
-        picture = self.pictures.iloc[index]
+        picture = self.pictures[index]
         picture.replace("_r","")
         # Load and resize the desired image
         im = self.resizeImage(self.path + "/cassava-leaf-disease-classification/train_images/" + picture)
-        label = self.labels.iloc[index]
+        label = self.labels[index]
         trans = transforms.ToTensor()
         im = trans(im)
-        if(self.pictures.iloc[index].endswith("_r.jpg")):
+        if(self.pictures[index].endswith("_r.jpg")):
             im = transforms.rotate(im, 45)
         
         # perform transformation if filename has _ in it
@@ -62,5 +61,5 @@ class StartingDataset(torch.utils.data.Dataset):
         return im
 
 # if __name__ == "__main__":
-#     datasetInstance = StartingDataset(["data/cassava-leaf-disease-classification/train_images/1000015157.jpg"], [0])
-#     datasetInstance.resizeImage(datasetInstance.pictures[0])
+#     datasetInstance = StartingDataset(0, 10, '.', 'cpu')
+#     print(datasetInstance[0])
