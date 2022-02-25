@@ -6,13 +6,14 @@ from tqdm import tqdm
 # from torch.utils.tensorboard import SummaryWriter
 
 
-def evaluate(val_loader, model, dimensions):
+def evaluate(val_loader, model, dimensions, device):
     model.eval()
     total, correct = 0, 0
 
     for data in iter(val_loader):
         inputs, labels = data
-        inputs = torch.reshape(inputs, dimensions)
+        inputs = torch.reshape(inputs, dimensions).to(device)  # move to gpu
+        labels = labels.to(device)  # move to gpu
         predictions = model(inputs).argmax(axis=1)
         total += len(labels)
         correct += (predictions==labels).sum().item()
@@ -47,7 +48,7 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
 
     # Initalize optimizer (for gradient descent) and loss function
     optimizer = optim.Adam(model.parameters())
-    loss_fn = nn.CrossEntropyLoss()
+    loss_fn = nn.CrossEntropyLoss().to(device)  # move to gpu
 
     step = 0
     for epoch in range(epochs):
@@ -64,8 +65,9 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
             # optimizer.zero_grad()
 
             batch_inputs, batch_labels = data
-            
-            batch_inputs = torch.reshape(batch_inputs, dimensions)
+            batch_inputs = batch_inputs.to(device)  # move to gpu
+            batch_labels = batch_labels.to(device)  # move to gpu
+
             optimizer.zero_grad()
             predictions = model(batch_inputs)
             # print(batch_labels)
@@ -105,7 +107,7 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
             current_loss.backward()
             optimizer.step()
         
-        evaluate(val_loader, model, dimensions)
+        evaluate(val_loader, model, dimensions, device)
 
         print()
 

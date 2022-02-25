@@ -10,8 +10,9 @@ def main():
     # Get command line arguments
     hyperparameters = {"epochs": constants.EPOCHS, "batch_size": constants.BATCH_SIZE}
 
-    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    device = 'cpu'
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Device: {device}")
+    # device = 'cpu'
 
     PATH = "data"
 
@@ -24,10 +25,10 @@ def main():
     
     # train_dataset = StartingDataset(0, (21000 * 0.8 // 32) * 32, PATH)
     # val_dataset = StartingDataset((21000 * 0.8 // 32) * 32, 21000 // 32 * 32, PATH)
-    train_dataset = StartingDataset(0, 192, PATH, device)
-    val_dataset = StartingDataset(192, 384, PATH, device)
+    train_dataset = StartingDataset(True, PATH)
+    val_dataset = StartingDataset(False, PATH)
     model = StartingNetwork()
-    model = model.to(device)
+    model = model.to(device)  # move to gpu if necessary
     
     starting_train(
         train_dataset=train_dataset,
