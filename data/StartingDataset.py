@@ -1,11 +1,13 @@
 from ctypes import resize
+import constants
+import math
 import torch
 import numpy as np
 import pandas as pd
 from PIL import Image
 import torchvision.transforms as transforms
 import re
-from random import shuffle
+import random
 
 INPUT_WIDTH=224
 INPUT_HEIGHT=224
@@ -15,7 +17,7 @@ class StartingDataset(torch.utils.data.Dataset):
     Dataset that contains 100000 3x224x224 black images (all zeros).
     """
 
-    def __init__(self, training_set, path):
+    def __init__(self, training_set, path, sample_factor):
         self.path = path
         df = pd.read_csv(path + "/cassava-leaf-disease-classification/train.csv")
         df = df.sort_values('label')
@@ -46,6 +48,11 @@ class StartingDataset(torch.utils.data.Dataset):
                             self.pictures.append(temp + trans)
                             self.labels.append(self.labels[i])
 
+        size = int(len(self.pictures) * sample_factor)
+        size = constants.BATCH_SIZE * math.ceil(size / constants.BATCH_SIZE)
+        self.pictures, self.labels = zip(*random.sample(
+            list(zip(self.pictures, self.labels)), size
+        ))
                 
         print(len(self.pictures))
 

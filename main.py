@@ -19,14 +19,16 @@ def main():
     print("Epochs:", constants.EPOCHS)
     print("Batch size:", constants.BATCH_SIZE)
 
+    sample_factor = 1
+
     dimensions = [constants.BATCH_SIZE, 3, 224, 224]
 
     # Initalize dataset and model. Then train the model!
     
     # train_dataset = StartingDataset(0, (21000 * 0.8 // 32) * 32, PATH)
     # val_dataset = StartingDataset((21000 * 0.8 // 32) * 32, 21000 // 32 * 32, PATH)
-    train_dataset = StartingDataset(True, PATH)
-    val_dataset = StartingDataset(False, PATH)
+    train_dataset = StartingDataset(True, PATH, sample_factor)
+    val_dataset = StartingDataset(False, PATH, sample_factor)
     model = StartingNetwork()
     model = model.to(device)  # move to gpu if necessary
     

@@ -6,20 +6,28 @@ from tqdm import tqdm
 # from torch.utils.tensorboard import SummaryWriter
 
 
-def evaluate(val_loader, model, dimensions, device):
+def evaluate(loader, model, dimensions, device, loss_fn):
     model.eval()
     total, correct = 0, 0
+    n_eval = 0
+    total_loss = 0
 
-    for data in iter(val_loader):
-        inputs, labels = data
-        inputs = torch.reshape(inputs, dimensions).to(device)  # move to gpu
-        labels = labels.to(device)  # move to gpu
-        predictions = model(inputs).argmax(axis=1)
-        total += len(labels)
-        correct += (predictions==labels).sum().item()
-    
-    print(f"{100 * correct / total}%")
+    with torch.no_grad():
+
+        for data in tqdm(loader):
+            inputs, labels = data
+            inputs = torch.reshape(inputs, dimensions).to(device)  # move to gpu
+            labels = labels.to(device)  # move to gpu
+            predictions = model(inputs)
+            current_loss = loss_fn(predictions, labels)
+            total_loss += current_loss
+            total += len(labels)
+            predictions = predictions.argmax(axis=1)
+            correct += (predictions==labels).sum().item()
+            n_eval += 1
+
     model.train()
+    return correct / total, total_loss / n_eval
 
 
 
@@ -34,8 +42,6 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
         hyperparameters: Dictionary containing hyperparameters.
         n_eval:          Interval at which we evaluate our model.
     """
-    # writer = SummaryWriter()
-    # Get keyword arguments
     batch_size, epochs = hyperparameters["batch_size"], hyperparameters["epochs"]
 
     # Initialize dataloaders
@@ -50,81 +56,29 @@ def starting_train(train_dataset, val_dataset, dimensions, model, hyperparameter
     optimizer = optim.Adam(model.parameters())
     loss_fn = nn.CrossEntropyLoss().to(device)  # move to gpu
 
-    step = 0
+    train_total, train_correct, train_loss, train_num = 0, 0, 0, 0
     for epoch in range(epochs):
         print(f"Epoch {epoch + 1} of {epochs}")
 
         # Loop over each batch in the dataset
         for data in tqdm(train_loader):
-            # TODO: Backpropagation and gradient descent determine which lines of code to use
-            # outputs = model(images)
-
-            # loss = loss_fn(outputs,labels)
-            # loss.backward()
-            # optimizer.step()
-            # optimizer.zero_grad()
-
             batch_inputs, batch_labels = data
             batch_inputs = batch_inputs.to(device)  # move to gpu
             batch_labels = batch_labels.to(device)  # move to gpu
 
             optimizer.zero_grad()
             predictions = model(batch_inputs)
-            # print(batch_labels)
             current_loss = loss_fn(predictions, batch_labels)
-            # predictions1 = torch.argmax(predictions, dim=1).double()
-            batch_labels = batch_labels.double()
 
-            # print(predictions)
-            # Periodically evaluate our model + log to Tensorboard
-            # if step % n_eval == 0:
-                # TODO:
-                # Compute training loss and accuracy.
-                # Log the results to Tensorboard.
-                # writer.add_scalar("Train Accuracy", compute_accuracy(predictions1, batch_labels))
-                # writer.add_scalar("Train Loss", current_loss)
-                # go to http://localhost:6006/ to view the Tensorboard
+            predictions = predictions.argmax(axis=1)
+            train_correct += (predictions==batch_labels).sum().item()
+            train_total += len(batch_labels)
+            train_loss += current_loss
+            train_num += 1
 
-                # TODO:
-                # Compute validation loss and accuracy.
-                # Log the results to Tensorboard.
-                # Don't forget to turn off gradient calculations! 
-                
-                # model.eval()
-                # total, correct = 0, 0
-                # for data in iter(val_loader):
-                #    inputs, labels = data
-                #    inputs = torch.reshape(inputs, dimensions)
-                #    predictions1 = model(inputs).argmax(axis=1)
-                #    total += len(labels)
-                #    correct += (predictions1==labels).sum().item()
-    
-                # writer.add_scalar("Validation Accuracy", 100 * correct/total)
-                # writer.add_scalar("Validation Loss", loss_fn(predictions,labels).mean().item())
-                # model.train()
-            # print(loss_fn(predictions,labels).mean().item())
-            # step += 1
             current_loss.backward()
             optimizer.step()
         
-        evaluate(val_loader, model, dimensions, device)
-
-        print()
-
-    # writer.flush()
-    # writer.close()
-
-def compute_accuracy(outputs, labels):
-    """
-    Computes the accuracy of a model's predictions.
-
-    Example input:
-        outputs: [0.7, 0.9, 0.3, 0.2]
-        labels:  [1, 1, 0, 1]
-
-    Example output:
-        0.75
-    """
-    n_correct = (torch.round(outputs) == labels).sum().item()
-    n_total = len(outputs)
-    return n_correct / n_total
+        val_acc, val_loss = evaluate(val_loader, model, dimensions, device, loss_fn)
+        print(f"Training accuracy: {train_correct / train_total}\tLoss: {train_loss / train_num}")
+        print(f"Validation accuracy: {val_acc}\tLoss: {val_loss}")
