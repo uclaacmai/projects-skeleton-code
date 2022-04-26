@@ -4,7 +4,7 @@ import numpy
 import constants
 from PIL import Image
 import pandas
-from resizeimage import resizeimage
+#from resizeimage import resizeimage
 import matplotlib.pyplot as plt
 # from matplotlib import image
 # from matplotlib import pyplot
