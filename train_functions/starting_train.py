@@ -66,7 +66,6 @@ def starting_train( train_dataset, val_dataset, model, hyperparameters, n_eval):
                 print('Training Loss: ', loss.item())
                 for data in iter(train_loader):
                     batch_inputs, batch_labels = data
-                    batch_inputs = torch.reshape(batch_inputs, (-1, 3, 224, 224))  # fix numbers
                     predictions = model(batch_inputs).argmax(axis=1)
                 print(100 * compute_accuracy(predictions, batch_labels), "%")
                 # TODO:
@@ -123,6 +122,5 @@ def evaluate(val_loader, model, loss_fn):
 
     for data in iter(val_loader):
         batch_inputs, batch_labels = data
-        batch_inputs = torch.reshape(batch_inputs, (-1, 3, 224, 224))  # fix numbers batch size image size
         predictions = model(batch_inputs).argmax(axis=1)
     print(100 * compute_accuracy(predictions, batch_labels), "%")
