@@ -28,8 +28,6 @@ python main.py
 
 [This notebook](https://www.kaggle.com/franktzheng/acm-ai-projects-kaggle-skeleton) will walk you through setting the skeleton code up on Kaggle.
 
-**Note:** The instructions in this section may not be completely accurate. If there are any mistakes, please let us know!
-
 1. Navigate to the [code tab of the Kaggle competition](https://www.kaggle.com/c/cassava-leaf-disease-classification/code). Click on the "New Notebook" button to create a new notebook. The dataset should be automatically loaded in the `/kaggle/input` folder.
 
 2. To use the GPU, click the three dots in the top-right corner and select Accelerator > GPU.
@@ -58,6 +56,8 @@ python main.py
    ```
 
 6. If you want your code to run without keeping the tab open, you can click on "Save version" and commit your code. Make sure to save any outputs (e.g. log files) to the `/kaggle/working`, and you should be able to access them in the future.
+
+**IMPORTANT:** If you want to pull new changes in the Kaggle notebook, first run `!git pull`, and then RESTART your notebook (Run > Restart & clear all outputs).
 
 ## Downloading the Dataset From Kaggle
 
