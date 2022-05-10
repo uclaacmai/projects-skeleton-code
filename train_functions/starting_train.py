@@ -55,10 +55,6 @@ def starting_train( train_dataset, val_dataset, model, hyperparameters, n_eval):
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
-       hhhfdsa
-
-
-
     # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
                 # TODO:
@@ -107,7 +103,7 @@ def evaluate(val_loader, model, loss_fn):
 
     TODO!
     """
-    pass
+    # pass
     if torch.cuda.is_available():  # Check if GPU is available
         device = torch.device('cuda')
     else:
