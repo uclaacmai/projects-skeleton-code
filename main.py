@@ -1,8 +1,8 @@
 import os
-
+import torch
 import constants
 from data.StartingDataset import StartingDataset
-from networks.StartingNetwork import StartingNetwork
+from networks.StartingNetwork import StartingNetwork, Model_b
 from train_functions.starting_train import starting_train
 
 
@@ -19,7 +19,7 @@ def main():
     # Initalize dataset and model. Then train the model!
     train_dataset = StartingDataset(True)
     val_dataset = StartingDataset(False)
-    model = StartingNetwork()
+    model = Model_b()
     starting_train(
     train_dataset=train_dataset,
     val_dataset=val_dataset,
