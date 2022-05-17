@@ -6,10 +6,10 @@ import constants
 
 def starting_train( train_dataset, val_dataset, model, hyperparameters, n_eval):
     # Use GPU
-   # if torch.cuda.is_available():  # Check if GPU is available
-    device = torch.device('cuda')
-    #else:
-    #    device = torch.device('cpu')
+    if torch.cuda.is_available():  # Check if GPU is available
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
 
     # Move the model to the GPU
     model = model.to(device)
