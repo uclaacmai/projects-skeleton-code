@@ -1,3 +1,4 @@
-EPOCHS = 100
-BATCH_SIZE = 32
-N_EVAL = 100
+EPOCHS = 3
+BATCH_SIZE = 64
+N_EVAL = 500
+PATH_TO_DATA = 'cassava-leaf-disease-classification/'
