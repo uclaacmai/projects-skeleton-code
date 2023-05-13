@@ -49,8 +49,10 @@ def main():
 
     # Take a look at the first training example
     image, label = train_dataset[0] #POSE THIS AS A QUESTION - ASK IF PPL REMEMBER HOW TO GRAB THE FIRST TRAINING EXAMPLE
-    plt.imshow(image.squeeze(), cmap='gray') # Display grayscale image. 
-    print('Label:', label)
+    #plt.imshow(image.squeeze(), cmap='gray') # Display grayscale image. 
+    #print('Label:', label)
+    print(image.shape)
+    print(type(image))
 
 if __name__ == "__main__":
     main()
